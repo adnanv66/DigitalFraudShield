@@ -1,0 +1,25 @@
+{
+  "appName": "Digital Fraud Shield",
+  "version": "1.0.0",
+  "supportedLanguages": [
+    { "code": "en", "name": "English", "native": "English" },
+    { "code": "ta", "name": "Tamil", "native": "தமிழ்" },
+    { "code": "hi", "name": "Hindi", "native": "हिंदी" }
+  ],
+  "scoringRules": [
+    { "rule": "contains_otp", "weight": 25, "label": "Contains OTP request" },
+    { "rule": "contains_upi_pin", "weight": 20, "label": "Contains UPI PIN request" },
+    { "rule": "urgency_words", "weight": 20, "label": "Urgent language or panic threat" },
+    { "rule": "click_link", "weight": 15, "label": "Contains suspicious link" },
+    { "rule": "unknown_upi", "weight": 20, "label": "Unknown UPI handle or VPA" },
+    { "rule": "prize_claim", "weight": 15, "label": "Claims prize or reward" },
+    { "rule": "refund_claim", "weight": 15, "label": "Claims instant cash refund" },
+    { "rule": "kyc_suspension", "weight": 20, "label": "KYC suspension/update threat" },
+    { "rule": "lottery_winner", "weight": 15, "label": "Lottery winner scheme" }
+  ],
+  "riskLevels": {
+    "LOW": { "min": 0, "max": 30, "color": "#10B981", "name": "Low Risk" },
+    "MEDIUM": { "min": 31, "max": 60, "color": "#F59E0B", "name": "Medium Risk" },
+    "HIGH": { "min": 61, "max": 100, "color": "#EF4444", "name": "High Risk" }
+  }
+}

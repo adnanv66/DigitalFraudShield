@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/scan-upi/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/detect",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/docs",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/openapi.json",
+      "dest": "api/index.py"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}

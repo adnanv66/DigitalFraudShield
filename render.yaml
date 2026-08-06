@@ -1,12 +1,14 @@
 services:
-  # Option 1: Docker Deployment (Recommended - Unified Full-Stack)
   - type: web
     name: digital-fraud-shield
-    env: docker
+    env: python
     region: singapore
     plan: free
-    dockerfilePath: Dockerfile
+    buildCommand: "./render-build.sh"
+    startCommand: "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS

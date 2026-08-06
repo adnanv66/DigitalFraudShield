@@ -46,36 +46,41 @@ export default function LoginPage() {
     setServerError('');
     setResetSuccess('');
 
-    if (mode === 'login') {
-      const res = await login(data.email, data.password);
-      if (res.success) {
-        navigate('/dashboard');
-      } else {
-        setServerError(res.message);
+    try {
+      if (mode === 'login') {
+        const res = await login(data.email, data.password);
+        if (res.success) {
+          navigate('/dashboard');
+        } else {
+          setServerError(res.message || 'Login failed');
+        }
+      } else if (mode === 'register') {
+        if (data.password !== data.confirmPassword) {
+          setServerError('Passwords do not match');
+          return;
+        }
+        const res = await registerUser(data.name, data.email, data.password, data.language_preference || 'en');
+        if (res.success) {
+          navigate('/dashboard');
+        } else {
+          setServerError(res.message || 'Registration failed');
+        }
+      } else if (mode === 'forgot') {
+        try {
+          await api.post('/auth/reset-password', {
+            email: data.email,
+            new_password: data.newPassword
+          });
+          setResetSuccess('If your email exists in our records, password has been reset successfully. You can now login.');
+        } catch (err) {
+          setServerError(err.response?.data?.detail || 'Reset failed');
+        }
       }
-    } else if (mode === 'register') {
-      if (data.password !== data.confirmPassword) {
-        setServerError('Passwords do not match');
-        return;
-      }
-      const res = await registerUser(data.name, data.email, data.password, data.language_preference || 'en');
-      if (res.success) {
-        navigate('/dashboard');
-      } else {
-        setServerError(res.message);
-      }
-    } else if (mode === 'forgot') {
-      try {
-        await api.post('/auth/reset-password', {
-          email: data.email,
-          new_password: data.newPassword
-        });
-        setResetSuccess('If your email exists in our records, password has been reset successfully. You can now login.');
-      } catch (err) {
-        setServerError(err.response?.data?.detail || 'Reset failed');
-      }
+    } catch (err) {
+      setServerError(err.message || 'An unexpected error occurred.');
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-sky-950 to-indigo-950 text-white flex flex-col justify-between p-4 sm:p-6 select-none">

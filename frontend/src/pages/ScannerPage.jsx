@@ -5,8 +5,10 @@ import {
   MessageSquare, Lock, Unlock, Play, RefreshCw, Send, Zap, Info, BellRing, Sparkles
 } from 'lucide-react';
 import api from '../services/api';
+import VoiceFraudAlertModal from '../components/VoiceFraudAlertModal';
 
 const MOCK_DEVICE_SMS_LIST = [
+
   {
     sender: 'VM-SBIINB',
     message_text: 'URGENT: Your SBI account has been locked due to pending KYC update. Click http://sbi-netverify.com immediately.',
@@ -39,6 +41,10 @@ export default function ScannerPage() {
   const [scannedResults, setScannedResults] = useState([]);
   const [activeAlert, setActiveAlert] = useState(null);
 
+  // Voice Pop-up Alert Modal State
+  const [isVoiceAlertOpen, setIsVoiceAlertOpen] = useState(false);
+  const [voiceAlertData, setVoiceAlertData] = useState(null);
+
   // Keypad Phone Feature Simulator State
   const [keypadInput, setKeypadInput] = useState('*99*786#');
   const [keypadScreenText, setKeypadScreenText] = useState('NOKIA / JIOPHONE 2G GATEWAY\nEnter USSD Code or SMS text below and press SEND.');
@@ -67,10 +73,12 @@ export default function ScannerPage() {
       });
       setScannedResults(res.data.results || []);
 
-      // If any High Risk found, trigger top alert toast
+      // If any High Risk found, trigger top alert toast AND Voice Pop-up Alert Modal!
       const highRiskItem = res.data.results.find(r => r.risk_level === 'High');
       if (highRiskItem) {
         setActiveAlert(highRiskItem);
+        setVoiceAlertData(highRiskItem);
+        setIsVoiceAlertOpen(true);
       }
     } catch (err) {
       console.error("Scanner API error:", err);
@@ -78,6 +86,7 @@ export default function ScannerPage() {
       setScanning(false);
     }
   };
+
 
   // Simulate Incoming Live UPI Scam SMS Event
   const simulateIncomingScamSMS = () => {
@@ -447,6 +456,14 @@ export default function ScannerPage() {
 
       </div>
 
+      {/* Automatic Voice Pop-up Fraud Alert Modal */}
+      <VoiceFraudAlertModal
+        isOpen={isVoiceAlertOpen}
+        onClose={() => setIsVoiceAlertOpen(false)}
+        detectionData={voiceAlertData}
+      />
+
     </div>
   );
 }
+

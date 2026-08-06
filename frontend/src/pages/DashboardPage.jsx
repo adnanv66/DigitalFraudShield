@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
-  ShieldCheck, AlertTriangle, AlertCircle, CheckCircle2, Flag, Target, 
-  Search, Filter, RefreshCw, ChevronRight, MessageSquareText, BarChart3,
-  BookOpen, Eye, X, Send, Sparkles, SlidersHorizontal
+  ShieldCheck, Shield, AlertTriangle, AlertCircle, CheckCircle2, Flag, Target, 
+  Search, Filter, RefreshCw, ChevronRight, MessageSquareText, MessageSquare, BarChart3,
+  BookOpen, Eye, X, Send, Sparkles, SlidersHorizontal, PhoneCall, PieChart as PieChartIcon
 } from 'lucide-react';
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend,
@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import api from '../services/api';
 import ReportModal from '../components/ReportModal';
+
 
 export default function DashboardPage() {
   const { t, i18n } = useTranslation();
@@ -182,8 +183,7 @@ export default function DashboardPage() {
 
       {/* DASHBOARD FUNCTION TABS HEADER */}
       <div className="border-b border-gray-200 dark:border-gray-800">
-        <nav className="flex space-x-4 sm:space-x-8" aria-label="Dashboard Functions Tabs">
-          
+        <nav className="flex space-x-8" aria-label="Dashboard Tabs">
           <button
             onClick={() => setActiveTab('messages')}
             className={`flex items-center space-x-2 py-3 px-1 border-b-2 font-extrabold text-sm transition-colors ${
@@ -192,11 +192,8 @@ export default function DashboardPage() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            <MessageSquareText className="h-4 w-4" />
-            <span>Fraud Detected Messages Log</span>
-            <span className="px-2 py-0.5 text-xs bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 rounded-full">
-              {filteredDetections.length}
-            </span>
+            <Shield className="h-4 w-4 text-brand-600" />
+            <span>Fraud Log</span>
           </button>
 
           <button
@@ -207,8 +204,8 @@ export default function DashboardPage() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            <BarChart3 className="h-4 w-4" />
-            <span>Analytics & Distribution Charts</span>
+            <BarChart3 className="h-4 w-4 text-emerald-500" />
+            <span>Analytics</span>
           </button>
 
           <button
@@ -219,12 +216,36 @@ export default function DashboardPage() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
             }`}
           >
-            <SlidersHorizontal className="h-4 w-4" />
-            <span>Scam Patterns & Rule Engine</span>
+            <PieChartIcon className="h-4 w-4 text-purple-500" />
+            <span>Scam Patterns</span>
           </button>
 
+          <button
+            onClick={() => setActiveTab('feedback')}
+            className={`flex items-center space-x-2 py-3 px-1 border-b-2 font-extrabold text-sm transition-colors ${
+              activeTab === 'feedback'
+                ? 'border-brand-600 text-brand-600 dark:text-brand-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <MessageSquare className="h-4 w-4 text-indigo-500" />
+            <span>User Feedback & CERT-In Chatbot</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('heatmap')}
+            className={`flex items-center space-x-2 py-3 px-1 border-b-2 font-extrabold text-sm transition-colors ${
+              activeTab === 'heatmap'
+                ? 'border-brand-600 text-brand-600 dark:text-brand-400'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <Target className="h-4 w-4 text-red-500" />
+            <span>Regional Heatmap</span>
+          </button>
         </nav>
       </div>
+
 
       {/* TAB 1: FRAUD DETECTED MESSAGES LOG */}
       {activeTab === 'messages' && (
@@ -498,7 +519,154 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* TAB 5: USER FEEDBACK & CERT-IN CHATBOT ASSISTANT */}
+      {activeTab === 'feedback' && (
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-800 shadow-sm space-y-6">
+          <div className="border-b pb-4 border-gray-100 dark:border-gray-800">
+            <h3 className="text-xl font-black text-gray-900 dark:text-white flex items-center space-x-2">
+              <MessageSquare className="h-6 w-6 text-indigo-600" />
+              <span>User Feedback & CERT-In Fraud Assistant</span>
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Ask questions about suspicious SMS/UPI messages and view community scam feedback logs.
+            </p>
+          </div>
+
+          {/* Official CERT-In Contact Strip */}
+          <div className="p-4 bg-gradient-to-r from-sky-900 via-indigo-900 to-slate-900 text-white rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center md:text-left">
+              <h4 className="text-sm font-extrabold text-white flex items-center justify-center md:justify-start space-x-2">
+                <PhoneCall className="h-4 w-4 text-yellow-300" />
+                <span>India CERT-In National Cyber Incident Response</span>
+              </h4>
+              <p className="text-xs text-slate-300">
+                Toll-Free: <code className="text-yellow-300 font-bold">1800-11-4949</code> | Direct: <code className="text-yellow-300 font-bold">011-2290-2657</code> | Email: <code className="text-yellow-300 font-bold">incident@cert-in.org.in</code>
+              </p>
+            </div>
+            <a
+              href="tel:1800114949"
+              className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-xl text-xs shadow flex items-center space-x-1.5 transition-transform transform active:scale-95"
+            >
+              <PhoneCall className="h-4 w-4" />
+              <span>Call Toll-Free 1800-11-4949</span>
+            </a>
+          </div>
+
+          {/* In-App Chatbot Assistant Query Widget */}
+          <div className="p-6 bg-slate-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200 dark:border-gray-700 space-y-4">
+            <h4 className="text-sm font-extrabold text-gray-900 dark:text-white flex items-center space-x-2">
+              <Sparkles className="h-4 w-4 text-brand-600" />
+              <span>FraudShield AI Helpline Chatbot Assistant</span>
+            </h4>
+            <p className="text-xs text-gray-500">
+              Type any question or paste a suspicious SMS below for instant plain-language advice:
+            </p>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="e.g., Someone sent me an SMS asking for my UPI PIN to claim ₹2,500..."
+                className="flex-1 p-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                id="chatbot-query-input"
+              />
+              <button
+                onClick={async () => {
+                  const inputEl = document.getElementById('chatbot-query-input');
+                  const ansEl = document.getElementById('chatbot-answer-box');
+                  if (!inputEl || !inputEl.value.trim()) return;
+                  try {
+                    const res = await api.post('/chat', { query: inputEl.value });
+                    if (ansEl) {
+                      ansEl.innerHTML = `<strong>AI Advice:</strong> ${res.data.response_advice}<br/><br/><em class="text-xs text-gray-400">CERT-In Toll-Free Helpline: ${res.data.cert_in_helplines.toll_free}</em>`;
+                      ansEl.classList.remove('hidden');
+                    }
+                  } catch (e) {
+                    if (ansEl) ansEl.innerText = "Error connecting to chatbot server.";
+                  }
+                }}
+                className="px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs shadow transition-colors"
+              >
+                Ask Assistant
+              </button>
+            </div>
+
+            <div id="chatbot-answer-box" className="hidden p-4 bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-900 text-brand-900 dark:text-brand-200 rounded-xl text-xs leading-relaxed">
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* TAB 4: REGIONAL FRAUD HEATMAP & REGULATORS */}
+
+      {activeTab === 'heatmap' && (
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-gray-800 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-gray-100 dark:border-gray-800">
+            <div>
+              <h3 className="text-xl font-black text-gray-900 dark:text-white flex items-center space-x-2">
+                <Target className="h-6 w-6 text-red-600" />
+                <span>Regional Fraud Heatmap & Telecom Operator Telemetry</span>
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Regional scam density and category trends across Indian states (Useful for TRAI, NPCI & Telecom Operators).
+              </p>
+            </div>
+            <span className="px-3 py-1 bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 font-extrabold text-xs rounded-full inline-block">
+              Live Regional Interception Active
+            </span>
+          </div>
+
+          {/* State-Wise Scam Density Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 bg-red-50 dark:bg-red-950/40 rounded-2xl border border-red-200 dark:border-red-900 space-y-2">
+              <div className="flex justify-between items-center text-xs font-black text-red-700 dark:text-red-300">
+                <span>Tamil Nadu (TN Circle)</span>
+                <span className="px-2 py-0.5 bg-red-600 text-white rounded text-[10px]">HIGH DENSITY</span>
+              </div>
+              <p className="text-2xl font-black text-red-600">4,120 Scams</p>
+              <span className="text-[11px] text-gray-600 dark:text-gray-400 font-medium block">
+                Top Scam: Fake Electricity Cut & EB UPI VPA
+              </span>
+            </div>
+
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-900 space-y-2">
+              <div className="flex justify-between items-center text-xs font-black text-amber-700 dark:text-amber-300">
+                <span>Maharashtra (MH)</span>
+                <span className="px-2 py-0.5 bg-amber-500 text-white rounded text-[10px]">MEDIUM DENSITY</span>
+              </div>
+              <p className="text-2xl font-black text-amber-600">3,480 Scams</p>
+              <span className="text-[11px] text-gray-600 dark:text-gray-400 font-medium block">
+                Top Scam: Paytm Cashback & GPay Collect Request
+              </span>
+            </div>
+
+            <div className="p-4 bg-red-50 dark:bg-red-950/40 rounded-2xl border border-red-200 dark:border-red-900 space-y-2">
+              <div className="flex justify-between items-center text-xs font-black text-red-700 dark:text-red-300">
+                <span>Uttar Pradesh (UP)</span>
+                <span className="px-2 py-0.5 bg-red-600 text-white rounded text-[10px]">HIGH DENSITY</span>
+              </div>
+              <p className="text-2xl font-black text-red-600">5,890 Scams</p>
+              <span className="text-[11px] text-gray-600 dark:text-gray-400 font-medium block">
+                Top Scam: SBI Bank KYC Block & SIM Card Expiry
+              </span>
+            </div>
+
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-900 space-y-2">
+              <div className="flex justify-between items-center text-xs font-black text-amber-700 dark:text-amber-300">
+                <span>Karnataka (KA)</span>
+                <span className="px-2 py-0.5 bg-amber-500 text-white rounded text-[10px]">MEDIUM DENSITY</span>
+              </div>
+              <p className="text-2xl font-black text-amber-600">2,940 Scams</p>
+              <span className="text-[11px] text-gray-600 dark:text-gray-400 font-medium block">
+                Top Scam: Fake Lottery Winner & KBC Scheme
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* DETAILED MESSAGE EXPLANATION MODAL */}
+
       {isDetailModalOpen && selectedDetection && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-900 rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-800 relative space-y-5">

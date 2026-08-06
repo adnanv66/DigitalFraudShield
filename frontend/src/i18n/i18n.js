@@ -41,6 +41,12 @@ const resources = {
       detect: {
         title: "SMS & UPI Fraud Analyzer",
         subtitle: "Paste any suspicious SMS, WhatsApp message, or payment request to check if it's a scam.",
+        upiAccessTitle: "Get Access to UPI Messages (Automatic Reader)",
+        upiAccessSubtitle: "Grant permission to automatically read all incoming UPI payment requests, bank alerts, and GPay/PhonePe SMS in real time.",
+        upiAccessBtn: "Get Access to UPI Messages",
+        upiAccessGranted: "UPI Message Access Granted (Auto-Reading Active)",
+        upiAccessDenied: "UPI Access Required",
+        simulateUpiBtn: "Simulate Incoming UPI Scam SMS",
         pastePlaceholder: "Paste suspicious SMS, WhatsApp message or UPI notification here...",
         quickSamplesTitle: "Try Sample Fraud Examples:",
         sampleSbi: "SBI KYC Block Scam",
@@ -56,8 +62,14 @@ const resources = {
         lowRiskAlert: "LOW RISK / RELATIVELY SAFE",
         whyHigh: "This message is High Risk because:",
         whyMedium: "This message is Medium Risk because:",
-        whyLow: "This message is Low Risk because:"
+        whyLow: "This message is Low Risk because:",
+        listenVoiceBtn: "🔊 Listen Voice Alert",
+        autoBlockedLink: "AUTO-BLOCKED UNSAFE LINK: Hyperlinks in this message have been disabled until verified safe by NPCI/Bank.",
+        gpayInterceptorBtn: "GPay / PhonePe Interceptor",
+        certInHelplineBtn: "📞 1-Tap Call Helpline 1930"
       },
+
+
       reportModal: {
         title: "Report Fraudulent SMS / UPI Scam",
         subtitle: "Help protect elderly users by submitting this scam to our public database.",
@@ -151,8 +163,13 @@ const resources = {
         lowRiskAlert: "பாதுகாப்பான செய்தி",
         whyHigh: "இந்த செய்தி அதிக ஆபத்து கொண்டது ஏனெனில்:",
         whyMedium: "இந்த செய்தி மிதமான ஆபத்து கொண்டது ஏனெனில்:",
-        whyLow: "இந்த செய்தி குறைந்த ஆபத்து கொண்டது ஏனெனில்:"
+        whyLow: "இந்த செய்தி குறைந்த ஆபத்து கொண்டது ஏனெனில்:",
+        listenVoiceBtn: "🔊 குரல் எச்சரிக்கையைக் கேள் (தமிழ்)",
+        autoBlockedLink: "தானியங்கு தடுக்கப்பட்ட பாதுகாப்பற்ற இணைப்பு: இந்தச் செய்தியில் உள்ள இணையதள இணைப்புகள் தடுக்கப்பட்டுள்ளன.",
+        gpayInterceptorBtn: "GPay / PhonePe இடைமறிப்பான்",
+        certInHelplineBtn: "📞 1-தட்டு உதவி எண் 1930"
       },
+
       reportModal: {
         title: "மோசடி செய்தியை புகாரளிக்கவும்",
         subtitle: "மற்ற குடிமக்களைப் பாதுகாக்க இந்த மோசடியைப் புகாரளிக்கவும்.",

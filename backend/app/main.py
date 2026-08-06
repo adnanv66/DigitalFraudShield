@@ -8,7 +8,7 @@ from app.config import settings
 from app.database import engine, Base, SessionLocal
 from app.models import User, Pattern, Detection, Report
 from app.security import get_password_hash
-from app.routers import auth, user, detect, reports, patterns, dashboard, scan
+from app.routers import auth, user, detect, reports, patterns, dashboard, scan, chatbot
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("fraud_shield")
@@ -42,6 +42,7 @@ app.include_router(reports.router)
 app.include_router(patterns.router)
 app.include_router(dashboard.router)
 app.include_router(scan.router)
+app.include_router(chatbot.router)
 
 # Register Routers with /api prefix for frontend Axios compatibility
 app.include_router(auth.router, prefix="/api")
@@ -51,6 +52,8 @@ app.include_router(reports.router, prefix="/api")
 app.include_router(patterns.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
 app.include_router(scan.router, prefix="/api")
+app.include_router(chatbot.router, prefix="/api")
+
 
 
 @app.on_event("startup")

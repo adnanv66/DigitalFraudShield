@@ -11,19 +11,23 @@ export const ThemeProvider = ({ children }) => {
     return localStorage.getItem('darkMode') === 'true';
   });
 
+  const [seniorMode, setSeniorMode] = useState(() => {
+    return localStorage.getItem('seniorMode') === 'true';
+  });
+
   const [fontSize, setFontSize] = useState(() => {
     return localStorage.getItem('fontSize') || 'normal'; // 'normal', 'large', 'xlarge'
   });
 
   useEffect(() => {
     const root = document.documentElement;
-    if (highContrast) {
+    if (highContrast || seniorMode) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
     localStorage.setItem('highContrast', highContrast);
-  }, [highContrast]);
+  }, [highContrast, seniorMode]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -38,12 +42,15 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('font-scale-normal', 'font-scale-large', 'font-scale-xlarge');
-    root.classList.add(`font-scale-${fontSize}`);
+    const effectiveScale = seniorMode ? 'xlarge' : fontSize;
+    root.classList.add(`font-scale-${effectiveScale}`);
     localStorage.setItem('fontSize', fontSize);
-  }, [fontSize]);
+    localStorage.setItem('seniorMode', seniorMode);
+  }, [fontSize, seniorMode]);
 
   const toggleHighContrast = () => setHighContrast(prev => !prev);
   const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const toggleSeniorMode = () => setSeniorMode(prev => !prev);
 
   return (
     <ThemeContext.Provider value={{
@@ -51,6 +58,8 @@ export const ThemeProvider = ({ children }) => {
       toggleHighContrast,
       darkMode,
       toggleDarkMode,
+      seniorMode,
+      toggleSeniorMode,
       fontSize,
       setFontSize
     }}>

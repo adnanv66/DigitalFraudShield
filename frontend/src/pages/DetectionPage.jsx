@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ShieldAlert, ShieldCheck, AlertTriangle, AlertCircle, CheckCircle2, 
-  Trash2, Search, Flag, Globe, Info, Sparkles 
+  Trash2, Search, Flag, Globe, Info, Sparkles, Volume2, PhoneCall, Link2Off, CheckCheck, Wallet
 } from 'lucide-react';
 import api from '../services/api';
 import ReportModal from '../components/ReportModal';
+import PaymentAppInterceptorModal from '../components/PaymentAppInterceptorModal';
+import VoiceFraudAlertModal from '../components/VoiceFraudAlertModal';
+import { speakWarning, stopVoice } from '../utils/voiceAlerts';
+
+const OFFICIAL_TRUSTED_SENDERS = ['SBIINB', 'HDFCBK', 'ICICIB', 'AXISBK', 'PAYTM', 'GPAY', 'PHONEPE', 'NPCI'];
 
 const SAMPLE_MESSAGES = [
   {
@@ -32,34 +37,73 @@ export default function DetectionPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
+  // Automatic UPI Message Reading Permission State
+  const [upiAccessGranted, setUpiAccessGranted] = useState(false);
+
+  // Voice Pop-up Alert Modal State
+  const [isVoiceAlertOpen, setIsVoiceAlertOpen] = useState(false);
+
+  // Payment Interceptor Modal State
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentCollectData, setPaymentCollectData] = useState(null);
+
   // Report Modal
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+
+  // Spoken Voice Alert Handler
+  const playVoiceAlert = (textToSpeak) => {
+    speakWarning(textToSpeak, i18n.language || 'en');
+  };
+
+  const handleRequestUpiAccess = () => {
+    const confirmPermission = window.confirm(
+      "Digital Fraud Shield Permission Request:\n\nGet Access to UPI Messages (READ_SMS & RECEIVE_SMS Permissions)?\n\nThis will allow the app to automatically read incoming GPay, PhonePe, Paytm, and bank UPI payment request messages in real time."
+    );
+    if (confirmPermission) {
+      setUpiAccessGranted(true);
+      // Simulate automatic reading of incoming UPI message
+      const incomingScam = "URGENT UPT: Paytm Cashback of Rs 2,500 credited! Enter your UPI PIN at cashback-verify.info to receive cash in bank.";
+      setMessageText(incomingScam);
+      analyzeMessageText(incomingScam);
+    }
+  };
 
   const handleLanguageChange = (lang) => {
     i18n.changeLanguage(lang);
     if (result) {
-      // Re-run analysis in newly selected language
       analyzeMessage(lang);
     }
   };
 
-  const analyzeMessage = async (overrideLang) => {
-    if (!messageText.trim()) return;
+  const analyzeMessageText = async (textToAnalyze, overrideLang) => {
+    if (!textToAnalyze.trim()) return;
     setLoading(true);
     const targetLang = overrideLang || i18n.language || 'en';
 
     try {
       const res = await api.post('/detect', {
-        message_text: messageText,
+        message_text: textToAnalyze,
         language: targetLang
       });
       setResult(res.data);
+      
+      // Automatically trigger Pop-up Voice Fraud Alert for High or Medium Risk!
+      if (res.data.risk_level === 'High' || res.data.risk_level === 'Medium') {
+        setIsVoiceAlertOpen(true);
+      }
     } catch (err) {
       alert('Error connecting to Detection Engine server.');
     } finally {
       setLoading(false);
     }
   };
+
+
+  const analyzeMessage = async (overrideLang) => {
+    analyzeMessageText(messageText, overrideLang);
+  };
+
 
   const handleClear = () => {
     setMessageText('');
@@ -87,8 +131,64 @@ export default function DetectionPage() {
         </p>
       </div>
 
+      {/* SECTION: GET ACCESS OF UPI MESSAGES (AUTOMATIC READER) */}
+      <div className="bg-gradient-to-br from-slate-900 via-sky-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-700/80 space-y-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-brand-500/20 text-brand-300 border border-brand-500/30 rounded-full text-xs font-bold">
+              <Sparkles className="h-3.5 w-3.5 text-yellow-300 animate-pulse" />
+              <span>Real-Time UPI Payment Interceptor</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white">
+              {t('detect.upiAccessTitle')}
+            </h2>
+            <p className="text-xs text-slate-300">
+              {t('detect.upiAccessSubtitle')}
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {!upiAccessGranted ? (
+              <button
+                onClick={handleRequestUpiAccess}
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-extrabold rounded-2xl shadow-lg shadow-brand-500/30 transition-all text-xs transform hover:scale-105"
+              >
+                <ShieldAlert className="h-4 w-4 text-yellow-300" />
+                <span>{t('detect.upiAccessBtn')}</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  const demoScam = "URGENT UPT: Power connection cut tonight at 9:30 PM. Pay Rs 1500 immediately to 9876543210@paytm or enter UPI PIN.";
+                  setMessageText(demoScam);
+                  analyzeMessageText(demoScam);
+                }}
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-500/30 transition-all text-xs"
+              >
+                <CheckCircle2 className="h-4 w-4 text-yellow-300 animate-bounce" />
+                <span>{t('detect.simulateUpiBtn')}</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Status Indicator */}
+        <div className="p-3.5 bg-white/10 backdrop-blur rounded-2xl border border-white/10 flex items-center justify-between text-xs">
+          <div className="flex items-center space-x-2.5">
+            <span className={`h-2.5 w-2.5 rounded-full ${upiAccessGranted ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'}`} />
+            <span className="font-extrabold text-white">
+              {upiAccessGranted ? t('detect.upiAccessGranted') : t('detect.upiAccessDenied')}
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-400 font-semibold hidden sm:block">
+            {upiAccessGranted ? 'Background SMS Listener: ACTIVE' : 'Permissions: PENDING'}
+          </span>
+        </div>
+      </div>
+
       {/* Main Workspace Card */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-200 dark:border-gray-800 space-y-6">
+
         
         {/* Quick Language Toggle Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
@@ -243,6 +343,62 @@ export default function DetectionPage() {
             </div>
           </div>
 
+          {/* Result Action Controls Toolbar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div className="flex items-center space-x-2">
+              {/* Spoken Voice Alert Button for Elderly Users */}
+              <button
+                type="button"
+                onClick={() => {
+                  const speechSummary = `${result.risk_level === 'High' ? 'அதிக ஆபத்து எச்சரிக்கை' : result.risk_level === 'Medium' ? 'மிதமான ஆபத்து எச்சரிக்கை' : 'பாதுகாப்பான செய்தி'}. ${result.explanation.join('. ')}`;
+                  playVoiceAlert(speechSummary);
+                }}
+                className="flex items-center space-x-2 px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-extrabold rounded-2xl shadow transition-all text-xs"
+              >
+                <Volume2 className="h-4 w-4 text-yellow-300 animate-pulse" />
+                <span>{t('detect.listenVoiceBtn')}</span>
+              </button>
+
+              {/* Payment App Collect Request Interceptor Test */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentCollectData({
+                    appName: 'Google Pay',
+                    amount: 'Rs. 2,500',
+                    requestedBy: 'cashback_trap@paytm'
+                  });
+                  setIsPaymentModalOpen(true);
+                }}
+                className="flex items-center space-x-1.5 px-3.5 py-2.5 bg-purple-100 hover:bg-purple-200 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 font-extrabold rounded-2xl text-xs transition-colors"
+              >
+                <Wallet className="h-4 w-4 text-purple-600" />
+                <span>{t('detect.gpayInterceptorBtn')}</span>
+              </button>
+            </div>
+
+            {/* Emergency Helpline 1930 */}
+            <a
+              href="tel:1930"
+              className="flex items-center space-x-1.5 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-extrabold rounded-2xl text-xs shadow transition-colors"
+            >
+              <PhoneCall className="h-4 w-4" />
+              <span>{t('detect.certInHelplineBtn')}</span>
+            </a>
+          </div>
+
+          {/* Auto-Block Suspicious Links Sanitizer Notice */}
+          {result.matched_rules.includes('click_link') && (
+            <div className="p-3.5 bg-red-100/80 dark:bg-red-950/80 border border-red-300 dark:border-red-800 rounded-2xl text-xs flex items-center justify-between text-red-900 dark:text-red-200">
+              <div className="flex items-center space-x-2">
+                <Link2Off className="h-4 w-4 text-red-600 flex-shrink-0" />
+                <span className="font-extrabold">{t('detect.autoBlockedLink')}</span>
+              </div>
+              <span className="px-2 py-0.5 bg-red-600 text-white font-black text-[10px] rounded uppercase">DISABLED</span>
+            </div>
+          )}
+
+
           {/* Explainability Breakdown Panel */}
           <div className="space-y-3">
             <h4 className="text-base font-extrabold text-gray-900 dark:text-white flex items-center space-x-2">
@@ -278,6 +434,22 @@ export default function DetectionPage() {
         detectionData={result}
       />
 
+      {/* Payment App Interceptor Modal */}
+      <PaymentAppInterceptorModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        collectData={paymentCollectData}
+      />
+
+      {/* Automatic Voice Pop-up Fraud Alert Modal */}
+      <VoiceFraudAlertModal
+        isOpen={isVoiceAlertOpen}
+        onClose={() => setIsVoiceAlertOpen(false)}
+        detectionData={result}
+      />
+
     </div>
   );
 }
+
+

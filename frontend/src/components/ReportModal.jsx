@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, X, CheckCircle2, Send } from 'lucide-react';
+import { AlertTriangle, X, CheckCircle2, Send, PhoneCall, Mail } from 'lucide-react';
 import api from '../services/api';
 
 export default function ReportModal({ isOpen, onClose, detectionData }) {
@@ -115,17 +115,48 @@ export default function ReportModal({ isOpen, onClose, detectionData }) {
               />
             </div>
 
-            {/* Additional Notes */}
+            {/* CERT-In National Cyber Helpline Integration */}
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl space-y-3">
+              <h4 className="text-xs font-black text-amber-900 dark:text-amber-300 uppercase tracking-wider flex items-center space-x-1.5">
+                <PhoneCall className="h-4 w-4 text-amber-600" />
+                <span>Official India CERT-In & Cyber Crime Hotlines</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <a
+                  href="tel:1800114949"
+                  className="flex items-center space-x-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-amber-300 dark:border-amber-700 hover:bg-amber-100 font-extrabold text-amber-900 dark:text-amber-200 transition-colors"
+                >
+                  <PhoneCall className="h-3.5 w-3.5 text-amber-600" />
+                  <span>CERT-In Toll-Free: 1800-11-4949</span>
+                </a>
+                <a
+                  href="tel:01122902657"
+                  className="flex items-center space-x-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-amber-300 dark:border-amber-700 hover:bg-amber-100 font-extrabold text-amber-900 dark:text-amber-200 transition-colors"
+                >
+                  <PhoneCall className="h-3.5 w-3.5 text-amber-600" />
+                  <span>Direct Line: 011-2290-2657</span>
+                </a>
+                <a
+                  href="mailto:incident@cert-in.org.in"
+                  className="flex items-center space-x-2 p-2 bg-white dark:bg-gray-800 rounded-xl border border-amber-300 dark:border-amber-700 hover:bg-amber-100 font-extrabold text-amber-900 dark:text-amber-200 transition-colors col-span-1 sm:col-span-2"
+                >
+                  <Mail className="h-3.5 w-3.5 text-amber-600" />
+                  <span>Report Incident Email: incident@cert-in.org.in</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Additional Notes Textarea */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
                 {t('reportModal.notesLabel')}
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-500"
-                placeholder="Provide phone numbers, suspicious links, or caller details..."
+                rows={2}
+                className="w-full p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none dark:text-white"
+                placeholder={t('reportModal.notesPlaceholder')}
               />
             </div>
 

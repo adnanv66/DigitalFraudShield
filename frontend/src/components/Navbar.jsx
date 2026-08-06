@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Shield, LayoutDashboard, SearchCode, User, LogOut, Sun, Moon, Eye, Radio } from 'lucide-react';
+import { Shield, LayoutDashboard, SearchCode, User, LogOut, Sun, Moon, Eye, Radio, PhoneCall } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -9,8 +9,9 @@ import { useTheme } from '../context/ThemeContext';
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
-  const { highContrast, toggleHighContrast, darkMode, toggleDarkMode } = useTheme();
+  const { highContrast, toggleHighContrast, darkMode, toggleDarkMode, seniorMode, toggleSeniorMode } = useTheme();
   const location = useLocation();
+
 
   const changeLang = (lang) => {
     i18n.changeLanguage(lang);
@@ -93,13 +94,37 @@ export default function Navbar() {
 
 
           {/* Actions & Language Switcher */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             
+            {/* Emergency Helpline 1930 Button */}
+            <a
+              href="tel:1930"
+              title="Emergency National Cyber Crime Helpline"
+              className="flex items-center space-x-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-md transition-transform transform active:scale-95"
+            >
+              <PhoneCall className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Helpline 1930</span>
+            </a>
+
+            {/* Senior Mode Toggle */}
+            <button
+              onClick={toggleSeniorMode}
+              title="Toggle Senior / Elderly Friendly Mode (Extra Large Fonts & Simple Contrast)"
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                seniorMode
+                  ? 'bg-amber-400 text-slate-900 ring-2 ring-amber-400 font-black shadow'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700'
+              }`}
+              aria-label="Toggle Senior Mode"
+            >
+              👴 {seniorMode ? 'Senior Mode: ON' : 'Senior Mode'}
+            </button>
+
             {/* Language Switcher */}
             <div className="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => changeLang('en')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+                className={`px-2 py-0.5 text-xs font-bold rounded-md transition-all ${
                   i18n.language === 'en'
                     ? 'bg-brand-600 text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
@@ -110,7 +135,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => changeLang('ta')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+                className={`px-2 py-0.5 text-xs font-bold rounded-md transition-all ${
                   i18n.language === 'ta'
                     ? 'bg-brand-600 text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
@@ -121,7 +146,7 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => changeLang('hi')}
-                className={`px-2.5 py-1 text-xs font-bold rounded-md transition-all ${
+                className={`px-2 py-0.5 text-xs font-bold rounded-md transition-all ${
                   i18n.language === 'hi'
                     ? 'bg-brand-600 text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900'
@@ -131,6 +156,7 @@ export default function Navbar() {
                 हिंदी
               </button>
             </div>
+
 
             {/* Accessibility High Contrast Toggle */}
             <button

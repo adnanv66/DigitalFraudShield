@@ -41,6 +41,16 @@ def create_access_token(data: dict, expires_delta: Optional[datetime.timedelta] 
     encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
+def create_refresh_token(data: dict, expires_delta: Optional[datetime.timedelta] = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.datetime.utcnow() + datetime.timedelta(days=7)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    return encoded_jwt
+
 def get_current_user(token: Optional[str] = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> Optional[User]:
     if not token:
         return None
@@ -49,12 +59,13 @@ def get_current_user(token: Optional[str] = Depends(oauth2_scheme), db: Session 
         sub = payload.get("sub")
         if sub is None:
             return None
-        user_id = int(sub)
+        # Try lookup by email first, then integer ID
+        user = db.query(User).filter(User.email == sub, User.is_active == True).first()
+        if not user and sub.isdigit():
+            user = db.query(User).filter(User.id == int(sub), User.is_active == True).first()
+        return user
     except Exception:
         return None
-
-    user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
-    return user
 
 
 def require_current_user(user: Optional[User] = Depends(get_current_user)) -> User:

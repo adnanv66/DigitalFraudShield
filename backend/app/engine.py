@@ -1,7 +1,9 @@
 import re
 from typing import List, Dict, Any, Tuple
+from app.ml_classifier import ScamMLClassifier
 
 # Multi-lingual explainability rule templates
+
 RULE_EXPLANATIONS = {
     "contains_otp": {
         "en": "It asks for your secret OTP (One Time Password). Never share your OTP with anyone.",
@@ -102,6 +104,13 @@ class FraudEngine:
             score += 15
             matched_rules.append("lottery_winner")
 
+        # Combine with Scikit-Learn TF-IDF ML Classifier probability
+        ml_score, ml_confidence, ml_terms = ScamMLClassifier.predict(text)
+        if ml_confidence > 0.4 and "ml_scam_classifier" not in matched_rules:
+            matched_rules.append("ml_scam_classifier")
+            # Hybrid weighted score calculation
+            score = round(0.6 * score + 0.4 * ml_score)
+
         # Determine Risk Level
         if score <= 30:
             risk_level = "Low"
@@ -114,9 +123,18 @@ class FraudEngine:
         explanations = []
         target_lang = lang if lang in ["en", "ta", "hi"] else "en"
 
+        if "ml_scam_classifier" in matched_rules and ml_confidence > 0.5:
+            if target_lang == "ta":
+                explanations.append(f"CERT-In ML மாதிரி பகுப்பாய்வு: {int(ml_confidence*100)}% மோசடி சாத்தியம் கண்டறியப்பட்டது.")
+            elif target_lang == "hi":
+                explanations.append(f"CERT-In ML मॉडल विश्लेषण: {int(ml_confidence*100)}% धोखाधड़ी की संभावना पाई गई।")
+            else:
+                explanations.append(f"RBI/CERT-In ML Classifier Analysis: High fraud probability detected ({int(ml_confidence*100)}% confidence).")
+
         for rule in matched_rules:
             if rule in RULE_EXPLANATIONS:
                 explanations.append(RULE_EXPLANATIONS[rule][target_lang])
+
 
         if not explanations:
             if target_lang == "ta":

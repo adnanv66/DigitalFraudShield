@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Exit on error
+# exit on error
 set -o errexit
 
-echo "--- Installing Python Backend Dependencies ---"
+echo "--- [1/2] Installing Python Backend Dependencies ---"
 pip install -r requirements.txt
 
-echo "--- Installing & Building React Frontend Assets ---"
-npm --prefix frontend install
-npm --prefix frontend run build
+echo "--- [2/2] Building React Frontend SPA ---"
+cd frontend
+npm install
+npm run build
+cd ..
 
-echo "--- Build Completed Successfully! ---"
+echo "--- Single Unified Build Completed Successfully ---"

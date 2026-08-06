@@ -1,28 +1,18 @@
 version: '3.8'
 
+# Unified Single-Service Full-Stack Deployment
 services:
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=sqlite:///./fraud_shield.db
       - JWT_SECRET=digital_fraud_shield_super_secret_jwt_key_2026
-      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
-    volumes:
-      - ./backend/fraud_shield.db:/app/fraud_shield.db
+      - CORS_ORIGINS=*
     restart: always
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8000
-    depends_on:
-      - backend
-    restart: always
+# Note: Standalone multi-container frontend service is DEPRECATED.
+# The React SPA is now built and served directly from the FastAPI Python backend under a single origin.

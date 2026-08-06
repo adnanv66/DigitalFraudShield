@@ -1,6 +1,10 @@
 import sys
 import os
 
+# Ensure UTF-8 output encoding for Windows PowerShell terminals
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../backend')))
 
 from app.engine import FraudEngine

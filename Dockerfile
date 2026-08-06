@@ -16,14 +16,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy backend dependencies and install
-COPY backend/requirements.txt ./backend/requirements.txt
-RUN pip install --no-cache-dir -r ./backend/requirements.txt
+# Copy requirements.txt and install
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r ./requirements.txt
 
 # Copy backend code
 COPY backend/ ./backend/
 
-# Copy built frontend assets from Stage 1 into the expected location
+# Copy built frontend assets from Stage 1 into expected location
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 # Set working directory to backend

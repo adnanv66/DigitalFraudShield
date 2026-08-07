@@ -25,15 +25,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo & Tagline */}
-          <Link to="/" className="flex items-center space-x-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1">
-            <div className="bg-brand-600 text-white p-2 rounded-xl shadow-md group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center space-x-2.5 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1 flex-shrink-0">
+            <div className="bg-brand-600 text-white p-2 rounded-xl shadow-md group-hover:scale-105 transition-transform flex-shrink-0">
               <Shield className="h-6 w-6" aria-hidden="true" />
             </div>
-            <div>
-              <span className="font-extrabold text-xl tracking-tight text-gray-900 dark:text-white block">
+            <div className="flex flex-col items-start justify-center min-w-0">
+              <span className="font-extrabold text-base sm:text-lg lg:text-xl tracking-tight text-gray-900 dark:text-white whitespace-nowrap leading-snug">
                 {t('nav.brand')}
               </span>
-              <span className="text-xs text-brand-600 dark:text-brand-400 font-medium hidden md:block">
+              <span className="text-[11px] sm:text-xs text-brand-600 dark:text-brand-400 font-medium hidden lg:block whitespace-nowrap truncate max-w-[220px] xl:max-w-xs leading-none">
                 {t('nav.tagline')}
               </span>
             </div>

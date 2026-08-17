@@ -1,2 +1,20 @@
-.vercel
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
 .env*
+
+# Logs
+*.log
+
+# Databases
+*.db
+*.sqlite3
+
+# Vercel & Build Artifacts
+.vercel
+node_modules/
+dist/
+__pycache__/
+*.pyc
+

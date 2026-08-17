@@ -10,8 +10,8 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=sqlite:///./fraud_shield.db
-      - JWT_SECRET=digital_fraud_shield_super_secret_jwt_key_2026
-      - CORS_ORIGINS=*
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
     restart: always
 
 # Note: Standalone multi-container frontend service is DEPRECATED.

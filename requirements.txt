@@ -12,3 +12,4 @@ numpy==1.26.4
 requests==2.31.0
 python-dotenv==1.0.1
 gtts==2.5.1
+psycopg2-binary==2.9.9

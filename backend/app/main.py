@@ -24,12 +24,19 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Setup CORS for same-origin fallback access
-origins = settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS != "*" else ["*"]
+# Setup CORS for cross-origin frontend (e.g. Vercel) and same-origin fallback access
+raw_cors = settings.CORS_ORIGINS.strip() if settings.CORS_ORIGINS else "*"
+if raw_cors == "*":
+    cors_origins = ["*"]
+    allow_credentials = False
+else:
+    cors_origins = [o.strip() for o in raw_cors.split(",") if o.strip()]
+    allow_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -24,6 +24,16 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# Health Check Endpoints (for Render / uptime monitoring)
+@app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
+def health_check():
+    return {
+        "status": "healthy",
+        "service": settings.APP_NAME,
+        "database": "connected"
+    }
+
 # Setup CORS for cross-origin frontend (e.g. Vercel) and same-origin fallback access
 raw_cors = settings.CORS_ORIGINS.strip() if settings.CORS_ORIGINS else "*"
 if raw_cors == "*":
